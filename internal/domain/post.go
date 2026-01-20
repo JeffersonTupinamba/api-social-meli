@@ -1,20 +1,32 @@
 package domain
 
-import "time"
-
-type PostProduct struct {
-	ID        int     `gorm:"primaryKey"`   // ID do produto
-	Name      string  `gorm:"not null"`     // Nome do produto (obrigatório)
-	Category  string  `gorm:"not null"`     // Categoria do produto (obrigatório)
-	Brand     string  `gorm:"not null"`     // Marca do produto (obrigatório)
-	Price     float64 `gorm:"not null"`     // Preço do produto
-	HasPromo  bool    `gorm:"default:true"` // Produto ativo (padrão true)
-	CreatedAt time.Time
-}
+import (
+	"time"
+)
 
 type Post struct {
-	ID     int       `gorm:"primaryKey"`
-	UserID int       `gorm:"foreignKey:ID;references:ID"` // ID do vendedor que está vendendo o produto (chave estrangeira)
-	Date   time.Time `gorm:"date"`                        // Data de criação do post
-	Detail Product   `gorm:"detail"`                      // Detalhes do produto
+	ID       int       `gorm:"primaryKey" json:"id_post"`
+	UserID   int       `json:"user_id" binding:"required"`
+	Date     time.Time `json:"date" gorm:"type:date"`
+	Product  Product   `json:"product" gorm:"embedded;embeddedPrefix:product_"`
+	Category int       `json:"category" binding:"required"`
+	Price    float64   `json:"price" binding:"required"`
+}
+
+// Struct para receber o JSON do Postman (com data em string)
+type RequestPostCreate struct {
+	UserID   int     `json:"user_id" binding:"required"`
+	Date     string  `json:"date" binding:"required"` // Formato "DD-MM-YYYY"
+	Product  Product `json:"product" binding:"required"`
+	Category int     `json:"category" binding:"required"`
+	Price    float64 `json:"price" binding:"required"`
+}
+
+type ResponsePostCreate struct {
+	ID       int       `json:"id_post"`
+	UserID   int       `json:"user_id"`
+	Date     time.Time `json:"date"`
+	Product  Product   `json:"product"`
+	Category int       `json:"category"`
+	Price    float64   `json:"price"`
 }

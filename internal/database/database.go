@@ -31,6 +31,6 @@ func ConnectDatabase() (*gorm.DB, error) {
 
 	// AutoMigrate cria ou atualiza as tabelas automaticament
 
-	return db, db.AutoMigrate(&domain.User{}, &domain.UserFollow{})
+	return db, db.AutoMigrate(&domain.User{}, &domain.UserFollow{}, &domain.Post{})
 
 }

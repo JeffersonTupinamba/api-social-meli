@@ -9,8 +9,9 @@ import (
 // setupRouter é a função que configura o router
 func SetupRouter(db *gorm.DB) *gin.Engine {
 
-	r := gin.Default()                // cria uma nova instância de gin default que é um router padrão do gin
-	h := &handler.UserHandler{DB: db} // cria uma nova instância de UserHandler com o banco de dados
+	r := gin.Default()                 // cria uma nova instância de gin default que é um router padrão do gin
+	h := &handler.UserHandler{DB: db}  // cria uma nova instância de UserHandler com o banco de dados
+	ph := &handler.PostHandler{DB: db} // cria uma nova instância de PostHandler com o banco de dados
 
 	// US 0013: Criar um novo usuário CRUD (Implícito)
 	r.POST("/users", h.CreateUser)
@@ -30,6 +31,9 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	// US 0004: Obter uma lista de todos os vendedores seguidos por um determinado usuário (Quem estou seguindo?)
 	r.GET("/users/:userId/followed/list", h.GetUsersFollowedSellersList)
+
+	// US 0005: Criar um novo post
+	r.POST("/products/publish", ph.CreatePost)
 
 	// US 0007: Para que você possa "Unfollow" um determinado vendedor.
 	r.DELETE("/users/:userId/unfollow/:sellerId", h.UnfollowUser)

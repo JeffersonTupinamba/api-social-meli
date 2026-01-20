@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/joho/godotenv"
 	"github.com/JeffersonTupinamba/api-social-meli/internal/database"
-	"github.com/JeffersonTupinamba/api-social-meli/internal/domain"
 	"github.com/JeffersonTupinamba/api-social-meli/internal/http"
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -21,12 +20,6 @@ func main() {
 	db, err := database.ConnectDatabase()
 	if err != nil {
 		log.Fatal("Não foi possível conectar ao banco de dados:", err)
-	}
-
-	// migra as tabelas do banco de dados
-	err = db.AutoMigrate(&domain.User{}, &domain.UserFollow{})
-	if err != nil {
-		log.Fatal("Não foi possível migrar o banco de dados:", err)
 	}
 
 	// Chama a função SetupRouter para configurar as rotas do pacote http

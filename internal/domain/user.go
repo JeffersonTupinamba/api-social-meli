@@ -5,8 +5,8 @@ import "time"
 // User é a representação da nossa tabela no banco de dados
 type User struct {
 	ID    int       `gorm:"primaryKey"`
-	Name  string    `gorm:"varchar(255);not null"`
-	Email string    `gorm:"varchar(255);not null;uniqueIndex"`
+	Name  string    `gorm:"varchar(15);not null"`
+	Email string    `gorm:"varchar(40);not null;uniqueIndex"`
 	Role  string    `gorm:"varchar(15);not null"`
 	Date  time.Time `gorm:"date"`
 }

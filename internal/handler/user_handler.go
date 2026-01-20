@@ -35,7 +35,14 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, user)
+	response := domain.ResponseUser{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Role:  user.Role,
+		Date:  user.Date,
+	}
+	c.JSON(http.StatusCreated, response)
 }
 
 // BUSCA UM USUÁRIO PELO ID
@@ -55,7 +62,14 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, user)
+	response := domain.ResponseUser{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Role:  user.Role,
+		Date:  user.Date,
+	}
+	c.JSON(http.StatusOK, response)
 }
 
 // RETORNA TODOS OS USUÁRIOS
@@ -67,7 +81,135 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar usuários."})
 		return
 	}
-	c.JSON(http.StatusOK, users)
+	for _, user := range users { // itera sobre o slice de usuários e retorna a resposta em formato JSON
+		response := domain.ResponseUser{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			Role:  user.Role,
+			Date:  user.Date,
+		}
+		c.JSON(http.StatusOK, response)
+	}
+}
+
+// ATUALIZA UM USUÁRIO PELO ID
+func (h *UserHandler) UpdateUser(c *gin.Context) {
+
+	userIdStr := c.Param("userId")
+	userId, err := strconv.Atoi(userIdStr)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."})
+		return
+	}
+
+	var userfound domain.User
+	if err := h.DB.First(&userfound, userId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
+		return
+	}
+
+	var userRequestUpdate domain.RequestUserUpdate
+	if err := c.ShouldBindJSON(&userRequestUpdate); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	h.DB.Model(&userfound).Updates(domain.User{
+		Name:  userRequestUpdate.Name,
+		Email: userRequestUpdate.Email,
+	})
+
+	response := domain.ResponseUser{
+		ID:    userfound.ID,
+		Name:  userfound.Name,
+		Email: userfound.Email,
+		Role:  userfound.Role,
+		Date:  userfound.Date,
+	}
+	c.JSON(http.StatusOK, response)
+}
+
+// DELETA UM USUÁRIO PELO ID
+func (h *UserHandler) DeleteUser(c *gin.Context) {
+	userIdStr := c.Param("userId")
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."})
+		return
+	}
+
+	result := h.DB.Delete(&domain.User{}, userId)
+
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Usuário deletado com sucesso."})
+}
+
+// US 0001: Poder "seguir" um vendedor específico
+func (h *UserHandler) FollowUser(c *gin.Context) {
+
+	userIdStr := c.Param("userId")
+	sellerIdStr := c.Param("sellerId")
+
+	// converte o ID do usuário para string
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."})
+		return
+	}
+	sellerId, err := strconv.Atoi(sellerIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID é do vendedor inválido."})
+		return
+	}
+	// verifica se o usuário está tentando seguir ele mesmo
+	if userId == sellerId {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Você não pode seguir você mesmo."})
+		return
+	}
+	// verifica se o vendedor existe
+	var existingSeller domain.User
+	if err := h.DB.First(&existingSeller, sellerId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado."})
+		return
+	}
+	if existingSeller.Role != "vendedor" && existingSeller.Role != "seller" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "O ID é do vendedor inválido."})
+		return
+	}
+	// verifica se o usuário existe
+	var existingUser domain.User
+	if err := h.DB.First(&existingUser, userId).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
+		return
+	}
+	// verifica se o usuário já está seguindo o vendedor
+	var existingFollow domain.UserFollow
+	if err := h.DB.Where("follower_id = ? AND seller_id = ?", userId, sellerId).First(&existingFollow).Error; err == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Você já segue este vendedor."})
+		return
+	}
+	// cria a instância de UserFollow com os dados do follow
+	follow := domain.UserFollow{
+		FollowerID: userId,
+		SellerID:   sellerId,
+	}
+
+	// cria o follow no banco de dados
+	if err := h.DB.Create(&follow).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar follow: "})
+		return
+	}
+
+	// retorna a mensagem de sucesso e os dados do follow
+	c.JSON(http.StatusOK, gin.H{"message": "Usuário seguindo vendedor com sucesso!.",
+		"data": follow,
+	})
 }
 
 // US 0002: Obter o número de seguidores de um vendedor
@@ -169,118 +311,6 @@ func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, response)
-}
-
-// ATUALIZA UM USUÁRIO PELO ID
-func (h *UserHandler) UpdateUser(c *gin.Context) {
-
-	userIdStr := c.Param("userId")
-	userId, err := strconv.Atoi(userIdStr)
-
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."})
-		return
-	}
-
-	var userfound domain.User
-	if err := h.DB.First(&userfound, userId).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
-		return
-	}
-
-	var userRequestUpdate domain.RequestUserUpdate
-	if err := c.ShouldBindJSON(&userRequestUpdate); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	h.DB.Model(&userfound).Updates(domain.User{
-		Name:  userRequestUpdate.Name,
-		Email: userRequestUpdate.Email,
-	})
-
-	c.JSON(http.StatusOK, userfound)
-}
-
-// DELETA UM USUÁRIO PELO ID
-func (h *UserHandler) DeleteUser(c *gin.Context) {
-	userIdStr := c.Param("userId")
-	userId, err := strconv.Atoi(userIdStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."})
-		return
-	}
-
-	result := h.DB.Delete(&domain.User{}, userId)
-
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Usuário deletado com sucesso."})
-}
-
-// US 0001: Poder "seguir" um vendedor específico
-func (h *UserHandler) FollowUser(c *gin.Context) {
-
-	userIdStr := c.Param("userId")
-	sellerIdStr := c.Param("sellerId")
-
-	// converte o ID do usuário para string
-	userId, err := strconv.Atoi(userIdStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."})
-		return
-	}
-	sellerId, err := strconv.Atoi(sellerIdStr)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID é do vendedor inválido."})
-		return
-	}
-	// verifica se o usuário está tentando seguir ele mesmo
-	if userId == sellerId {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Você não pode seguir você mesmo."})
-		return
-	}
-	// verifica se o vendedor existe
-	var existingSeller domain.User
-	if err := h.DB.First(&existingSeller, sellerId).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado."})
-		return
-	}
-	if existingSeller.Role != "vendedor" && existingSeller.Role != "seller" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "O ID é do vendedor inválido."})
-		return
-	}
-	// verifica se o usuário existe
-	var existingUser domain.User
-	if err := h.DB.First(&existingUser, userId).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
-		return
-	}
-	// verifica se o usuário já está seguindo o vendedor
-	var existingFollow domain.UserFollow
-	if err := h.DB.Where("follower_id = ? AND seller_id = ?", userId, sellerId).First(&existingFollow).Error; err == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Você já segue este vendedor."})
-		return
-	}
-	// cria a instância de UserFollow com os dados do follow
-	follow := domain.UserFollow{
-		FollowerID: userId,
-		SellerID:   sellerId,
-	}
-
-	// cria o follow no banco de dados
-	if err := h.DB.Create(&follow).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar follow: "})
-		return
-	}
-
-	// retorna a mensagem de sucesso e os dados do follow
-	c.JSON(http.StatusOK, gin.H{"message": "Usuário seguindo vendedor com sucesso!.",
-		"data": follow,
-	})
 }
 
 // US 0007: Para que você possa "Unfollow" um determinado vendedor.
