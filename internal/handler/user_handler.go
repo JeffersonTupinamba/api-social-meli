@@ -35,14 +35,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		return
 	}
 
-	response := domain.ResponseUser{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Role:  user.Role,
-		Date:  user.Date,
-	}
-	c.JSON(http.StatusCreated, response)
+	c.JSON(http.StatusCreated, user)
 }
 
 // BUSCA UM USUÁRIO PELO ID
@@ -62,14 +55,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 		return
 	}
 
-	response := domain.ResponseUser{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Role:  user.Role,
-		Date:  user.Date,
-	}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, user)
 }
 
 // RETORNA TODOS OS USUÁRIOS
@@ -81,16 +67,8 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar usuários."})
 		return
 	}
-	for _, user := range users { // itera sobre o slice de usuários e retorna a resposta em formato JSON
-		response := domain.ResponseUser{
-			ID:    user.ID,
-			Name:  user.Name,
-			Email: user.Email,
-			Role:  user.Role,
-			Date:  user.Date,
-		}
-		c.JSON(http.StatusOK, response)
-	}
+
+	c.JSON(http.StatusOK, users)
 }
 
 // ATUALIZA UM USUÁRIO PELO ID
@@ -121,14 +99,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		Email: userRequestUpdate.Email,
 	})
 
-	response := domain.ResponseUser{
-		ID:    userfound.ID,
-		Name:  userfound.Name,
-		Email: userfound.Email,
-		Role:  userfound.Role,
-		Date:  userfound.Date,
-	}
-	c.JSON(http.StatusOK, response)
+	c.JSON(http.StatusOK, userfound)
 }
 
 // DELETA UM USUÁRIO PELO ID
@@ -208,8 +179,7 @@ func (h *UserHandler) FollowUser(c *gin.Context) {
 
 	// retorna a mensagem de sucesso e os dados do follow
 	c.JSON(http.StatusOK, gin.H{"message": "Usuário seguindo vendedor com sucesso!.",
-		"data": follow,
-	})
+		"data": follow})
 }
 
 // US 0002: Obter o número de seguidores de um vendedor
