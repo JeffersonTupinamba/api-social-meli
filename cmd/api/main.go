@@ -4,16 +4,31 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/joho/godotenv"
 	"github.com/JeffersonTupinamba/api-social-meli/internal/database"
+	"github.com/JeffersonTupinamba/api-social-meli/internal/domain"
 	"github.com/JeffersonTupinamba/api-social-meli/internal/http"
 )
 
 func main() {
+	// Carrega as variáveis de ambiente do arquivo .env
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Aviso: Arquivo .env não encontrado, usando variáveis de ambiente do sistema")
+	}
+
 	// inicializa o banco de dados
-	db, err := database.InitDatabase()
+	db, err := database.ConnectDatabase()
 	if err != nil {
 		log.Fatal("Não foi possível conectar ao banco de dados:", err)
 	}
+
+	// migra as tabelas do banco de dados
+	err = db.AutoMigrate(&domain.User{}, &domain.UserFollow{})
+	if err != nil {
+		log.Fatal("Não foi possível migrar o banco de dados:", err)
+	}
+
 	// Chama a função SetupRouter para configurar as rotas do pacote http
 	// passa o 'db' para que o 'router' possa entregar a requisição para o 'handlers'
 	r := http.SetupRouter(db)
