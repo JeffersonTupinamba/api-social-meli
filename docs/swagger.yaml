@@ -1,0 +1,229 @@
+basePath: /
+definitions:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO:
+    properties:
+      userId:
+        type: integer
+      userName:
+        type: string
+    type: object
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post:
+    properties:
+      category:
+        type: integer
+      date:
+        type: string
+      id_post:
+        type: integer
+      price:
+        type: number
+      product:
+        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
+      user_id:
+        type: integer
+    required:
+    - category
+    - price
+    - user_id
+    type: object
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product:
+    properties:
+      brand:
+        type: string
+      color:
+        type: string
+      notes:
+        type: string
+      product_id:
+        type: integer
+      product_name:
+        type: string
+      type:
+        type: string
+    required:
+    - brand
+    - color
+    - notes
+    - product_name
+    - type
+    type: object
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate:
+    properties:
+      category:
+        type: integer
+      date:
+        description: Formato "DD-MM-YYYY"
+        type: string
+      price:
+        type: number
+      product:
+        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
+      user_id:
+        type: integer
+    required:
+    - category
+    - date
+    - price
+    - product
+    - user_id
+    type: object
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse:
+    properties:
+      followers:
+        items:
+          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO'
+        type: array
+      userId:
+        type: integer
+      userName:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API para o desafio Social Meli do bootcamp.
+  title: Social Meli API
+  version: "1.0"
+paths:
+  /products/post:
+    post:
+      consumes:
+      - application/json
+      description: Cria uma postagem de produto para um vendedor específico
+      parameters:
+      - description: Dados da postagem
+        in: body
+        name: post
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post'
+        "400":
+          description: Erro de validação
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Criar uma nova postagem
+      tags:
+      - posts
+  /users/{userId}/follow/{userIdToFollow}:
+    post:
+      consumes:
+      - application/json
+      description: Permite que um usuário siga um vendedor específico
+      parameters:
+      - description: ID do usuário que vai seguir
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: ID do vendedor a ser seguido
+        in: path
+        name: userIdToFollow
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuário seguido com sucesso
+          schema:
+            type: string
+        "400":
+          description: Erro na requisição
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Seguir um vendedor
+      tags:
+      - users
+  /users/{userId}/followed/list:
+    get:
+      consumes:
+      - application/json
+      description: Retorna a lista de todos os vendedores seguidos por um determinado
+        usuário
+      parameters:
+      - description: ID do vendedor
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
+        "404":
+          description: Vendedor não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Listar todos os vendedores seguidos
+      tags:
+      - users
+  /users/{userId}/followers/list:
+    get:
+      consumes:
+      - application/json
+      description: Retorna a lista de todos os usuários que seguem um vendedor específico
+      parameters:
+      - description: ID do vendedor
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
+        "404":
+          description: Vendedor não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Listar seguidores de um vendedor
+      tags:
+      - users
+  /users/{userId}/unfollow/{userIdToUnfollow}:
+    post:
+      consumes:
+      - application/json
+      description: Permite que um usuário pare de seguir um vendedor específico
+      parameters:
+      - description: ID do usuário
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: ID do vendedor a deixar de seguir
+        in: path
+        name: userIdToUnfollow
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Deixou de seguir com sucesso
+          schema:
+            type: string
+      summary: Deixar de seguir um vendedor
+      tags:
+      - users
+swagger: "2.0"

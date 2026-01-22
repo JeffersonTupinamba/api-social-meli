@@ -122,6 +122,18 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 }
 
 // US 0001: Poder "seguir" um vendedor específico
+
+// FollowUser godoc
+// @Summary      Seguir um vendedor
+// @Description  Permite que um usuário siga um vendedor específico
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        userId       path      int  true  "ID do usuário que vai seguir"
+// @Param        userIdToFollow  path      int  true  "ID do vendedor a ser seguido"
+// @Success      200          {string}  string "Usuário seguido com sucesso"
+// @Failure      400          {object}  map[string]string "Erro na requisição"
+// @Router       /users/{userId}/follow/{userIdToFollow} [post]
 func (h *UserHandler) FollowUser(c *gin.Context) {
 
 	userIdStr := c.Param("userId")
@@ -214,6 +226,17 @@ func (h *UserHandler) GetUsersFollowersCountBySeller(c *gin.Context) {
 }
 
 // US 0003: Obter lista de seguidores de um vendedor
+
+// GetFollowersList godoc
+// @Summary      Listar seguidores de um vendedor
+// @Description  Retorna a lista de todos os usuários que seguem um vendedor específico
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        userId  path      int  true  "ID do vendedor"
+// @Success      200     {object}  domain.UserFollowersListResponse
+// @Failure      404     {object}  map[string]string "Vendedor não encontrado"
+// @Router       /users/{userId}/followers/list [get]
 func (h *UserHandler) GetUsersFollowersList(c *gin.Context) {
 	userIdStr := c.Param("userId")
 	userId, _ := strconv.Atoi(userIdStr)
@@ -249,6 +272,17 @@ func (h *UserHandler) GetUsersFollowersList(c *gin.Context) {
 }
 
 // US 0004: Obter uma lista de todos os vendedores seguidos por um determinado usuário (Quem estou seguindo?)
+
+// GetFollowersList godoc
+// @Summary      Listar todos os vendedores seguidos
+// @Description  Retorna a lista de todos os vendedores seguidos por um determinado usuário
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        userId  path      int  true  "ID do vendedor"
+// @Success      200     {object}  domain.UserFollowersListResponse
+// @Failure      404     {object}  map[string]string "Vendedor não encontrado"
+// @Router       /users/{userId}/followed/list [get]
 func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
 	userIdStr := c.Param("userId")
 	userId, _ := strconv.Atoi(userIdStr)
@@ -284,6 +318,17 @@ func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
 }
 
 // US 0007: Para que você possa "Unfollow" um determinado vendedor.
+
+// UnfollowUser godoc
+// @Summary      Deixar de seguir um vendedor
+// @Description  Permite que um usuário pare de seguir um vendedor específico
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        userId         path      int  true  "ID do usuário"
+// @Param        userIdToUnfollow  path      int  true  "ID do vendedor a deixar de seguir"
+// @Success      200            {string}  string "Deixou de seguir com sucesso"
+// @Router       /users/{userId}/unfollow/{userIdToUnfollow} [post]
 func (h *UserHandler) UnfollowUser(c *gin.Context) {
 
 	userIdStr := c.Param("userId")

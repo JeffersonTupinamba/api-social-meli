@@ -1,0 +1,341 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API para o desafio Social Meli do bootcamp.",
+        "title": "Social Meli API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/products/post": {
+            "post": {
+                "description": "Cria uma postagem de produto para um vendedor específico",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "posts"
+                ],
+                "summary": "Criar uma nova postagem",
+                "parameters": [
+                    {
+                        "description": "Dados da postagem",
+                        "name": "post",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post"
+                        }
+                    },
+                    "400": {
+                        "description": "Erro de validação",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}/follow/{userIdToFollow}": {
+            "post": {
+                "description": "Permite que um usuário siga um vendedor específico",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Seguir um vendedor",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do usuário que vai seguir",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID do vendedor a ser seguido",
+                        "name": "userIdToFollow",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário seguido com sucesso",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Erro na requisição",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}/followed/list": {
+            "get": {
+                "description": "Retorna a lista de todos os vendedores seguidos por um determinado usuário",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Listar todos os vendedores seguidos",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do vendedor",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Vendedor não encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}/followers/list": {
+            "get": {
+                "description": "Retorna a lista de todos os usuários que seguem um vendedor específico",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Listar seguidores de um vendedor",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do vendedor",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Vendedor não encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}/unfollow/{userIdToUnfollow}": {
+            "post": {
+                "description": "Permite que um usuário pare de seguir um vendedor específico",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Deixar de seguir um vendedor",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do usuário",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID do vendedor a deixar de seguir",
+                        "name": "userIdToUnfollow",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deixou de seguir com sucesso",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO": {
+            "type": "object",
+            "properties": {
+                "userId": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post": {
+            "type": "object",
+            "required": [
+                "category",
+                "price",
+                "user_id"
+            ],
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "id_post": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "product": {
+                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product": {
+            "type": "object",
+            "required": [
+                "brand",
+                "color",
+                "notes",
+                "product_name",
+                "type"
+            ],
+            "properties": {
+                "brand": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "product_id": {
+                    "type": "integer"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate": {
+            "type": "object",
+            "required": [
+                "category",
+                "date",
+                "price",
+                "product",
+                "user_id"
+            ],
+            "properties": {
+                "category": {
+                    "type": "integer"
+                },
+                "date": {
+                    "description": "Formato \"DD-MM-YYYY\"",
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "product": {
+                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse": {
+            "type": "object",
+            "properties": {
+                "followers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO"
+                    }
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,10 @@
 package http
 
 import (
+	_ "github.com/JeffersonTupinamba/api-social-meli/docs" // Import necessário para carregar os docs
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/JeffersonTupinamba/api-social-meli/internal/handler"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -13,6 +17,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	h := &handler.UserHandler{DB: db}  // cria uma nova instância de UserHandler com o banco de dados
 	ph := &handler.PostHandler{DB: db} // cria uma nova instância de PostHandler com o banco de dados
 
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// US 0013: Criar um novo usuário CRUD (Implícito)
 	r.POST("/users", h.CreateUser)
 	r.GET("/users/:userId", h.GetUser)

@@ -9,6 +9,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title           Social Meli API
+// @version         1.0
+// @description     API para o desafio Social Meli do bootcamp.
+// @host            localhost:8080
+// @BasePath        /
 func main() {
 	// Carrega as variáveis de ambiente do arquivo .env
 	err := godotenv.Load()
