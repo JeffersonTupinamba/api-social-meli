@@ -1,13 +1,13 @@
 basePath: /
 definitions:
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO:
+  domain.FollowerDTO:
     properties:
       userId:
         type: integer
       userName:
         type: string
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post:
+  domain.Post:
     properties:
       category:
         type: integer
@@ -18,7 +18,7 @@ definitions:
       price:
         type: number
       product:
-        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
+        $ref: '#/definitions/domain.Product'
       user_id:
         type: integer
     required:
@@ -26,7 +26,7 @@ definitions:
     - price
     - user_id
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product:
+  domain.Product:
     properties:
       brand:
         type: string
@@ -47,7 +47,7 @@ definitions:
     - product_name
     - type
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate:
+  domain.RequestPostCreate:
     properties:
       category:
         type: integer
@@ -57,7 +57,7 @@ definitions:
       price:
         type: number
       product:
-        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
+        $ref: '#/definitions/domain.Product'
       user_id:
         type: integer
     required:
@@ -67,11 +67,46 @@ definitions:
     - product
     - user_id
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse:
+  domain.RequestUserCreate:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+    required:
+    - email
+    - name
+    - role
+    type: object
+  domain.RequestUserUpdate:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+  domain.User:
+    properties:
+      date:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+  domain.UserFollowersListResponse:
     properties:
       followers:
         items:
-          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO'
+          $ref: '#/definitions/domain.FollowerDTO'
         type: array
       userId:
         type: integer
@@ -85,7 +120,7 @@ info:
   title: Social Meli API
   version: "1.0"
 paths:
-  /products/post:
+  /products/publish:
     post:
       consumes:
       - application/json
@@ -96,14 +131,14 @@ paths:
         name: post
         required: true
         schema:
-          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate'
+          $ref: '#/definitions/domain.RequestPostCreate'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post'
+            $ref: '#/definitions/domain.Post'
         "400":
           description: Erro de validação
           schema:
@@ -113,6 +148,159 @@ paths:
       summary: Criar uma nova postagem
       tags:
       - posts
+  /users:
+    get:
+      description: Retorna uma lista contendo todos os usuários cadastrados no sistema
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Lista de usuários retornada com sucesso
+          schema:
+            items:
+              $ref: '#/definitions/domain.User'
+            type: array
+        "500":
+          description: Erro interno ao buscar usuários no banco
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Listar todos os usuários
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dados do usuário
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RequestUserCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Dados inválidos ou JSON malformado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno ao salvar no banco
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Criar um novo usuário
+      tags:
+      - users
+  /users/{userId}:
+    delete:
+      parameters:
+      - description: ID do Usuário
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mensagem de sucesso
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Usuário não existe para ser deletado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Deletar um usuário
+      tags:
+      - users
+    get:
+      parameters:
+      - description: ID do Usuário
+        in: path
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: ID inválido (não é um número)
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Usuário não encontrado no banco
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Buscar usuário por ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Atualiza os dados (nome e email) de um usuário existente pelo seu
+        ID
+      parameters:
+      - description: ID do usuário a ser atualizado
+        in: path
+        name: userId
+        required: true
+        type: integer
+      - description: Novos dados do usuário
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/domain.RequestUserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Usuário atualizado com sucesso
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: ID inválido ou JSON malformado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Usuário não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Atualizar um usuário
+      tags:
+      - users
   /users/{userId}/follow/{userIdToFollow}:
     post:
       consumes:
@@ -163,7 +351,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
+            $ref: '#/definitions/domain.UserFollowersListResponse'
         "404":
           description: Vendedor não encontrado
           schema:
@@ -171,6 +359,26 @@ paths:
               type: string
             type: object
       summary: Listar todos os vendedores seguidos
+      tags:
+      - users
+  /users/{userId}/followers/count:
+    get:
+      description: Retorna a quantidade total de seguidores de um usuário, DESDE QUE
+        ele seja um vendedor (role='seller')
+      parameters:
+      - description: ID do vendedor
+        in: path
+        name: userId
+        required: true
+        type: integer
+      responses:
+        "400":
+          description: ID inválido ou usuário não é vendedor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Obter contagem de seguidores
       tags:
       - users
   /users/{userId}/followers/list:
@@ -190,7 +398,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
+            $ref: '#/definitions/domain.UserFollowersListResponse'
         "404":
           description: Vendedor não encontrado
           schema:
@@ -201,7 +409,7 @@ paths:
       tags:
       - users
   /users/{userId}/unfollow/{userIdToUnfollow}:
-    post:
+    put:
       consumes:
       - application/json
       description: Permite que um usuário pare de seguir um vendedor específico

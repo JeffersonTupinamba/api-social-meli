@@ -15,6 +15,17 @@ type UserHandler struct {
 }
 
 // CRIA UM NOVO USUÁRIO
+
+// CreateUser godoc
+// @Summary      Criar um novo usuário
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        user  body      domain.RequestUserCreate  true  "Dados do usuário"
+// @Success      201   {object}  domain.User
+// @Failure      400   {object}  map[string]string "Dados inválidos ou JSON malformado"
+// @Failure      500   {object}  map[string]string "Erro interno ao salvar no banco"
+// @Router       /users [post]
 func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	var createUser domain.RequestUserCreate // cria uma nova instância de RequestUserCreate
@@ -39,6 +50,16 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 }
 
 // BUSCA UM USUÁRIO PELO ID
+
+// GetUser godoc
+// @Summary      Buscar usuário por ID
+// @Tags         users
+// @Produce      json
+// @Param        userId  path      int  true  "ID do Usuário"
+// @Success      200     {object}  domain.User
+// @Failure      400     {object}  map[string]string "ID inválido (não é um número)"
+// @Failure      404     {object}  map[string]string "Usuário não encontrado no banco"
+// @Router       /users/{userId} [get]
 func (h *UserHandler) GetUser(c *gin.Context) {
 
 	userIdStr := c.Param("userId")
@@ -59,6 +80,15 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 }
 
 // RETORNA TODOS OS USUÁRIOS
+
+// GetUsers godoc
+// @Summary      Listar todos os usuários
+// @Description  Retorna uma lista contendo todos os usuários cadastrados no sistema
+// @Tags         users
+// @Produce      json
+// @Success      200  {array}   domain.User        "Lista de usuários retornada com sucesso"
+// @Failure      500  {object}  map[string]string  "Erro interno ao buscar usuários no banco"
+// @Router       /users [get]
 func (h *UserHandler) GetUsers(c *gin.Context) {
 
 	var users []domain.User
@@ -72,6 +102,19 @@ func (h *UserHandler) GetUsers(c *gin.Context) {
 }
 
 // ATUALIZA UM USUÁRIO PELO ID
+
+// UpdateUser godoc
+// @Summary      Atualizar um usuário
+// @Description  Atualiza os dados (nome e email) de um usuário existente pelo seu ID
+// @Tags         users
+// @Accept       json
+// @Produce      json
+// @Param        userId  path      int                        true  "ID do usuário a ser atualizado"
+// @Param        user    body      domain.RequestUserUpdate   true  "Novos dados do usuário"
+// @Success      200     {object}  domain.User                "Usuário atualizado com sucesso"
+// @Failure      400     {object}  map[string]string          "ID inválido ou JSON malformado"
+// @Failure      404     {object}  map[string]string          "Usuário não encontrado"
+// @Router       /users/{userId} [put]
 func (h *UserHandler) UpdateUser(c *gin.Context) {
 
 	userIdStr := c.Param("userId")
@@ -97,12 +140,23 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 	h.DB.Model(&userfound).Updates(domain.User{
 		Name:  userRequestUpdate.Name,
 		Email: userRequestUpdate.Email,
+		Role:  userRequestUpdate.Role,
 	})
 
 	c.JSON(http.StatusOK, userfound)
 }
 
 // DELETA UM USUÁRIO PELO ID
+
+// DeleteUser godoc
+// @Summary      Deletar um usuário
+// @Tags         users
+// @Produce      json
+// @Param        userId  path      int  true  "ID do Usuário"
+// @Success      200     {object}  map[string]string "Mensagem de sucesso"
+// @Failure      400     {object}  map[string]string "ID inválido"
+// @Failure      404     {object}  map[string]string "Usuário não existe para ser deletado"
+// @Router       /users/{userId} [delete]
 func (h *UserHandler) DeleteUser(c *gin.Context) {
 	userIdStr := c.Param("userId")
 	userId, err := strconv.Atoi(userIdStr)
@@ -138,7 +192,6 @@ func (h *UserHandler) FollowUser(c *gin.Context) {
 
 	userIdStr := c.Param("userId")
 	sellerIdStr := c.Param("sellerId")
-
 	// converte o ID do usuário para string
 	userId, err := strconv.Atoi(userIdStr)
 	if err != nil {
@@ -161,8 +214,8 @@ func (h *UserHandler) FollowUser(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado."})
 		return
 	}
-	if existingSeller.Role != "vendedor" && existingSeller.Role != "seller" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "O ID é do vendedor inválido."})
+	if existingSeller.Role != "seller" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "O ID informado não pertence a um vendedor."})
 		return
 	}
 	// verifica se o usuário existe
@@ -195,6 +248,13 @@ func (h *UserHandler) FollowUser(c *gin.Context) {
 }
 
 // US 0002: Obter o número de seguidores de um vendedor
+// GetUsersFollowersCountBySeller godoc
+// @Summary      Obter contagem de seguidores
+// @Description  Retorna a quantidade total de seguidores de um usuário, DESDE QUE ele seja um vendedor (role='seller')
+// @Tags         users
+// @Param        userId  path  int  true  "ID do vendedor"
+// @Failure      400     {object}  map[string]string "ID inválido ou usuário não é vendedor"
+// @Router       /users/{userId}/followers/count [get]
 func (h *UserHandler) GetUsersFollowersCountBySeller(c *gin.Context) {
 	userIdStr := c.Param("userId") // Alinhado com o roteador
 	userId, err := strconv.Atoi(userIdStr)
@@ -202,11 +262,10 @@ func (h *UserHandler) GetUsersFollowersCountBySeller(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido."})
 		return
 	}
-
 	// 1. Verificar se o vendedor existe e se a role é válida
-	var seller domain.User
-	if err := h.DB.First(&seller, userId).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado."})
+	var user domain.User
+	if err := h.DB.Where("id = ? AND role = ?", userId, "seller").First(&user).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado ou usuário não é um vendedor."})
 		return
 	}
 
@@ -217,12 +276,13 @@ func (h *UserHandler) GetUsersFollowersCountBySeller(c *gin.Context) {
 		return
 	}
 
-	// 3. Retornar a resposta no formato padrão
-	c.JSON(http.StatusOK, gin.H{
-		"userId":         seller.ID,
-		"userName":       seller.Name,
-		"followersCount": count,
-	})
+	response := domain.UserFollowersCountResponse{
+		UserID:         user.ID,
+		UserName:       user.Name,
+		FollowersCount: count,
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // US 0003: Obter lista de seguidores de um vendedor
@@ -241,10 +301,10 @@ func (h *UserHandler) GetUsersFollowersList(c *gin.Context) {
 	userIdStr := c.Param("userId")
 	userId, _ := strconv.Atoi(userIdStr)
 
-	// 1. Verificar se o vendedor existe
+	// 1. Verificar se o vendedor existe e se é um vendedor
 	var seller domain.User
-	if err := h.DB.First(&seller, userId).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado"})
+	if err := h.DB.Where("id = ? AND role = ?", userId, "seller").First(&seller).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado ou usuário não é um vendedor"})
 		return
 	}
 
@@ -328,7 +388,7 @@ func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
 // @Param        userId         path      int  true  "ID do usuário"
 // @Param        userIdToUnfollow  path      int  true  "ID do vendedor a deixar de seguir"
 // @Success      200            {string}  string "Deixou de seguir com sucesso"
-// @Router       /users/{userId}/unfollow/{userIdToUnfollow} [post]
+// @Router       /users/{userId}/unfollow/{userIdToUnfollow} [put]
 func (h *UserHandler) UnfollowUser(c *gin.Context) {
 
 	userIdStr := c.Param("userId")
@@ -342,7 +402,14 @@ func (h *UserHandler) UnfollowUser(c *gin.Context) {
 	}
 	sellerId, err := strconv.Atoi(sellerIdStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID é do vendedor inválido."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do vendedor inválido."})
+		return
+	}
+
+	// Verifica se o vendedor existe e se é um vendedor
+	var seller domain.User
+	if err := h.DB.Where("id = ? AND role = ?", sellerId, "seller").First(&seller).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado ou usuário não é um vendedor."})
 		return
 	}
 
@@ -358,6 +425,5 @@ func (h *UserHandler) UnfollowUser(c *gin.Context) {
 		return
 	}
 
-	// retorna a mensagem de sucesso
 	c.JSON(http.StatusOK, gin.H{"message": "Usuário deixou de seguir vendedor com sucesso!"})
 }

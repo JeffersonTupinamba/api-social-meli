@@ -41,7 +41,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	r.POST("/products/publish", ph.CreatePost)
 
 	// US 0007: Para que você possa "Unfollow" um determinado vendedor.
-	r.DELETE("/users/:userId/unfollow/:sellerId", h.UnfollowUser)
+	r.PUT("/users/:userId/unfollow/:sellerId", h.UnfollowUser)
 
 	return r // retorna o router configurado
 }

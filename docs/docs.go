@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/products/post": {
+        "/products/publish": {
             "post": {
                 "description": "Cria uma postagem de produto para um vendedor específico",
                 "consumes": [
@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate"
+                            "$ref": "#/definitions/domain.RequestPostCreate"
                         }
                     }
                 ],
@@ -43,11 +43,242 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post"
+                            "$ref": "#/definitions/domain.Post"
                         }
                     },
                     "400": {
                         "description": "Erro de validação",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Retorna uma lista contendo todos os usuários cadastrados no sistema",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Listar todos os usuários",
+                "responses": {
+                    "200": {
+                        "description": "Lista de usuários retornada com sucesso",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/domain.User"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar usuários no banco",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Criar um novo usuário",
+                "parameters": [
+                    {
+                        "description": "Dados do usuário",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.RequestUserCreate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/domain.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Dados inválidos ou JSON malformado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao salvar no banco",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Buscar usuário por ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do Usuário",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.User"
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido (não é um número)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado no banco",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Atualiza os dados (nome e email) de um usuário existente pelo seu ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Atualizar um usuário",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do usuário a ser atualizado",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Novos dados do usuário",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/domain.RequestUserUpdate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuário atualizado com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/domain.User"
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido ou JSON malformado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuário não encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Deletar um usuário",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do Usuário",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Mensagem de sucesso",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuário não existe para ser deletado",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -132,11 +363,40 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
                         "description": "Vendedor não encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}/followers/count": {
+            "get": {
+                "description": "Retorna a quantidade total de seguidores de um usuário, DESDE QUE ele seja um vendedor (role='seller')",
+                "tags": [
+                    "users"
+                ],
+                "summary": "Obter contagem de seguidores",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "ID do vendedor",
+                        "name": "userId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "ID inválido ou usuário não é vendedor",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -173,7 +433,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -189,7 +449,7 @@ const docTemplate = `{
             }
         },
         "/users/{userId}/unfollow/{userIdToUnfollow}": {
-            "post": {
+            "put": {
                 "description": "Permite que um usuário pare de seguir um vendedor específico",
                 "consumes": [
                     "application/json"
@@ -229,7 +489,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO": {
+        "domain.FollowerDTO": {
             "type": "object",
             "properties": {
                 "userId": {
@@ -240,7 +500,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post": {
+        "domain.Post": {
             "type": "object",
             "required": [
                 "category",
@@ -261,14 +521,14 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                    "$ref": "#/definitions/domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product": {
+        "domain.Product": {
             "type": "object",
             "required": [
                 "brand",
@@ -298,7 +558,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate": {
+        "domain.RequestPostCreate": {
             "type": "object",
             "required": [
                 "category",
@@ -319,20 +579,73 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                    "$ref": "#/definitions/domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse": {
+        "domain.RequestUserCreate": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "role"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.RequestUserUpdate": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.User": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.UserFollowersListResponse": {
             "type": "object",
             "properties": {
                 "followers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO"
+                        "$ref": "#/definitions/domain.FollowerDTO"
                     }
                 },
                 "userId": {

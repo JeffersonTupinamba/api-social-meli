@@ -22,7 +22,7 @@ type PostHandler struct {
 // @Param        post  body      domain.RequestPostCreate  true  "Dados da postagem"
 // @Success      200   {object}  domain.Post
 // @Failure      400   {object}  map[string]string "Erro de validação"
-// @Router       /products/post [post]
+// @Router       /products/publish [post]
 func (h *PostHandler) CreatePost(c *gin.Context) {
 
 	var req domain.RequestPostCreate

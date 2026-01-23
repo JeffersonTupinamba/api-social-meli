@@ -8,7 +8,7 @@ type User struct {
 	Name  string    `gorm:"varchar(15);not null"`
 	Email string    `gorm:"varchar(40);not null;uniqueIndex"`
 	Role  string    `gorm:"varchar(15);not null"`
-	Date  time.Time `gorm:"date"`
+	Date  time.Time `gorm:"autoCreateTime"`
 }
 
 // RequestUserCreate define o que esperamos receber no POST /users
@@ -25,15 +25,14 @@ type ResponseUser struct {
 	Email     string    `json:"email"`
 	Role      string    `json:"role"`
 	Date      time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime"`
 }
 
 // RequestUserUpdate define o que permitimos atualizar no PUT /users/:id
 type RequestUserUpdate struct {
-	Name      string    `json:"name"`
-	Email     string    `json:"email" binding:"omitempty,email"`
-	Role      string    `json:"role"`
-	UpdatedAt time.Time `json:"updated_at"`
+	Name  string `json:"name"`
+	Email string `json:"email" binding:"omitempty,email"`
+	Role  string `json:"role"`
 }
 
 type FollowerDTO struct {
@@ -51,4 +50,10 @@ type UserFollowedListResponse struct {
 	UserID          int           `json:"userId"`
 	UserName        string        `json:"userName"`
 	FollowedSellers []FollowerDTO `json:"followedSellers"`
+}
+
+type UserFollowersCountResponse struct {
+	UserID         int    `json:"user_id"`
+	UserName       string `json:"user_name"`
+	FollowersCount int64  `json:"followers_count"`
 }
