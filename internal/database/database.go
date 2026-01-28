@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// InitDatabase é a função que inicializa o banco de dados e retorna uma instância do banco de dados
+// ConnectDatabase é a função que inicializa o banco de dados e retorna uma instância do banco de dados
 // e retorna um erro caso ocorra algum problema na conexão com o banco de dados
 func ConnectDatabase() (*gorm.DB, error) {
 	// Pega as configurações do banco de dados das variáveis de ambiente

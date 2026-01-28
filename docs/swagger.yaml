@@ -358,6 +358,12 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "500":
+          description: Erro ao buscar vendedores seguidos
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Listar todos os vendedores seguidos
       tags:
       - users

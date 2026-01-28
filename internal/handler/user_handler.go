@@ -5,13 +5,15 @@ import (
 	"strconv"
 
 	"github.com/JeffersonTupinamba/api-social-meli/internal/domain"
+	"github.com/JeffersonTupinamba/api-social-meli/internal/service"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 // UserHandler é o handler para as operações de usuário (injeção de dependência)
 type UserHandler struct {
-	DB *gorm.DB // banco de dados para realizar as operações no banco de dados (injeção de dependência) (é uma instância do banco de dados)
+	DB          *gorm.DB // banco de dados para realizar as operações no banco de dados (injeção de dependência) (é uma instância do banco de dados)
+	UserService *service.UserService
 }
 
 // CRIA UM NOVO USUÁRIO
@@ -41,7 +43,8 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		Role:  createUser.Role,
 	}
 
-	if err := h.DB.Create(&user).Error; err != nil {
+	err := h.UserService.CreateUserService(&user)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar usuário."})
 		return
 	}
@@ -342,6 +345,7 @@ func (h *UserHandler) GetUsersFollowersList(c *gin.Context) {
 // @Param        userId  path      int  true  "ID do vendedor"
 // @Success      200     {object}  domain.UserFollowersListResponse
 // @Failure      404     {object}  map[string]string "Vendedor não encontrado"
+// @Failure      500     {object}  map[string]string "Erro ao buscar vendedores seguidos"
 // @Router       /users/{userId}/followed/list [get]
 func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
 	userIdStr := c.Param("userId")

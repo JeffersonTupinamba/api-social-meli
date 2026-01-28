@@ -33,8 +33,11 @@ func main() {
 
 	// INICIA O SERVIDOR HTTP NA PORTA 8080 (MELI_PORT) DEVE SER CONFIGURADA NO ARQUIVO .env
 	fmt.Println("Servidor rodando na porta 8080...")
-	if err := r.Run(":8080"); err != nil {
+
+	err = r.Run(":8080")
+	if err != nil {
 		log.Fatal("Falha ao iniciar o servidor:", err) //log.Fatal é uma função que termina o programa e imprime a mensagem de erro
 
 	}
+
 }

@@ -6,6 +6,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/JeffersonTupinamba/api-social-meli/internal/handler"
+	"github.com/JeffersonTupinamba/api-social-meli/internal/repository"
+	"github.com/JeffersonTupinamba/api-social-meli/internal/service"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -13,10 +16,14 @@ import (
 // setupRouter é a função que configura o router
 func SetupRouter(db *gorm.DB) *gin.Engine {
 
-	r := gin.Default()                 // cria uma nova instância de gin default que é um router padrão do gin
-	h := &handler.UserHandler{DB: db}  // cria uma nova instância de UserHandler com o banco de dados
-	ph := &handler.PostHandler{DB: db} // cria uma nova instância de PostHandler com o banco de dados
+	r := gin.Default() // cria uma nova instância de gin default que é um router padrão do gin
 
+	ur := &repository.UserRepository{DB: db}
+	us := &service.UserService{UserRepository: ur}     // cria uma nova instância de UserService com o banco de dados
+	h := &handler.UserHandler{DB: db, UserService: us} // cria uma nova instância de UserHandler com o banco de dados
+	ph := &handler.PostHandler{DB: db}                 // cria uma nova instância de PostHandler com o banco de dados
+
+	r.Use(cors.Default()) // configura o CORS para permitir todas as origens, métodos e headers
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// US 0013: Criar um novo usuário CRUD (Implícito)
 	r.POST("/users", h.CreateUser)
