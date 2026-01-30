@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestPostCreate"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Post"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post"
                         }
                     },
                     "400": {
@@ -74,7 +74,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.User"
+                                "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse"
                             }
                         }
                     },
@@ -107,7 +107,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestUserCreate"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate"
                         }
                     }
                 ],
@@ -115,7 +115,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/domain.User"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
                         }
                     },
                     "400": {
@@ -161,7 +161,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.User"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
                         }
                     },
                     "400": {
@@ -210,7 +210,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestUserUpdate"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate"
                         }
                     }
                 ],
@@ -218,7 +218,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Usuário atualizado com sucesso",
                         "schema": {
-                            "$ref": "#/definitions/domain.User"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
                         }
                     },
                     "400": {
@@ -363,7 +363,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -442,7 +442,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -498,7 +498,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "domain.FollowerDTO": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO": {
             "type": "object",
             "properties": {
                 "userId": {
@@ -509,7 +509,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.Post": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post": {
             "type": "object",
             "required": [
                 "category",
@@ -530,14 +530,14 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/domain.Product"
+                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "domain.Product": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product": {
             "type": "object",
             "required": [
                 "brand",
@@ -567,7 +567,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.RequestPostCreate": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate": {
             "type": "object",
             "required": [
                 "category",
@@ -588,14 +588,14 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/domain.Product"
+                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "domain.RequestUserCreate": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate": {
             "type": "object",
             "required": [
                 "email",
@@ -614,7 +614,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.RequestUserUpdate": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate": {
             "type": "object",
             "properties": {
                 "email": {
@@ -628,7 +628,7 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.User": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.User": {
             "type": "object",
             "properties": {
                 "date": {
@@ -648,19 +648,36 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.UserFollowersListResponse": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse": {
             "type": "object",
             "properties": {
                 "followers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/domain.FollowerDTO"
+                        "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO"
                     }
                 },
                 "userId": {
                     "type": "integer"
                 },
                 "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 }
             }

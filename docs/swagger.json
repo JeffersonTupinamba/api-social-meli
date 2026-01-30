@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestPostCreate"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate"
                         }
                     }
                 ],
@@ -37,7 +37,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.Post"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post"
                         }
                     },
                     "400": {
@@ -68,7 +68,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.User"
+                                "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse"
                             }
                         }
                     },
@@ -101,7 +101,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestUserCreate"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate"
                         }
                     }
                 ],
@@ -109,7 +109,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/domain.User"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
                         }
                     },
                     "400": {
@@ -155,7 +155,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.User"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
                         }
                     },
                     "400": {
@@ -204,7 +204,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/domain.RequestUserUpdate"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate"
                         }
                     }
                 ],
@@ -212,7 +212,7 @@
                     "200": {
                         "description": "Usuário atualizado com sucesso",
                         "schema": {
-                            "$ref": "#/definitions/domain.User"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
                         }
                     },
                     "400": {
@@ -357,7 +357,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -436,7 +436,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -492,7 +492,7 @@
         }
     },
     "definitions": {
-        "domain.FollowerDTO": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO": {
             "type": "object",
             "properties": {
                 "userId": {
@@ -503,7 +503,7 @@
                 }
             }
         },
-        "domain.Post": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post": {
             "type": "object",
             "required": [
                 "category",
@@ -524,14 +524,14 @@
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/domain.Product"
+                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "domain.Product": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product": {
             "type": "object",
             "required": [
                 "brand",
@@ -561,7 +561,7 @@
                 }
             }
         },
-        "domain.RequestPostCreate": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate": {
             "type": "object",
             "required": [
                 "category",
@@ -582,14 +582,14 @@
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/domain.Product"
+                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "domain.RequestUserCreate": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate": {
             "type": "object",
             "required": [
                 "email",
@@ -608,7 +608,7 @@
                 }
             }
         },
-        "domain.RequestUserUpdate": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate": {
             "type": "object",
             "properties": {
                 "email": {
@@ -622,7 +622,7 @@
                 }
             }
         },
-        "domain.User": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.User": {
             "type": "object",
             "properties": {
                 "date": {
@@ -642,19 +642,36 @@
                 }
             }
         },
-        "domain.UserFollowersListResponse": {
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse": {
             "type": "object",
             "properties": {
                 "followers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/domain.FollowerDTO"
+                        "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO"
                     }
                 },
                 "userId": {
                     "type": "integer"
                 },
                 "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "role": {
                     "type": "string"
                 }
             }

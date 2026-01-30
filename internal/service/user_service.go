@@ -19,3 +19,13 @@ func (s *UserService) CreateUserService(u *domain.User) error {
 	}
 	return nil
 }
+
+// Lista todos os usuários
+// ListUsersService é a função que lista todos os usuários no banco de dados
+func (s *UserService) ListUsersService(l *[]domain.UserListResponse) error {
+	err := s.UserRepository.ListUsers(l)
+	if err != nil {
+		return err
+	}
+	return nil
+}

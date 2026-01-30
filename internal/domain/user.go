@@ -57,3 +57,10 @@ type UserFollowersCountResponse struct {
 	UserName       string `json:"user_name"`
 	FollowersCount int64  `json:"followers_count"`
 }
+
+type UserListResponse struct {
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
+}

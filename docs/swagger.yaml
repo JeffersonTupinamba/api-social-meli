@@ -1,13 +1,13 @@
 basePath: /
 definitions:
-  domain.FollowerDTO:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO:
     properties:
       userId:
         type: integer
       userName:
         type: string
     type: object
-  domain.Post:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post:
     properties:
       category:
         type: integer
@@ -18,7 +18,7 @@ definitions:
       price:
         type: number
       product:
-        $ref: '#/definitions/domain.Product'
+        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
       user_id:
         type: integer
     required:
@@ -26,7 +26,7 @@ definitions:
     - price
     - user_id
     type: object
-  domain.Product:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product:
     properties:
       brand:
         type: string
@@ -47,7 +47,7 @@ definitions:
     - product_name
     - type
     type: object
-  domain.RequestPostCreate:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate:
     properties:
       category:
         type: integer
@@ -57,7 +57,7 @@ definitions:
       price:
         type: number
       product:
-        $ref: '#/definitions/domain.Product'
+        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
       user_id:
         type: integer
     required:
@@ -67,7 +67,7 @@ definitions:
     - product
     - user_id
     type: object
-  domain.RequestUserCreate:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate:
     properties:
       email:
         type: string
@@ -80,7 +80,7 @@ definitions:
     - name
     - role
     type: object
-  domain.RequestUserUpdate:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate:
     properties:
       email:
         type: string
@@ -89,7 +89,7 @@ definitions:
       role:
         type: string
     type: object
-  domain.User:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.User:
     properties:
       date:
         type: string
@@ -102,15 +102,26 @@ definitions:
       role:
         type: string
     type: object
-  domain.UserFollowersListResponse:
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse:
     properties:
       followers:
         items:
-          $ref: '#/definitions/domain.FollowerDTO'
+          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO'
         type: array
       userId:
         type: integer
       userName:
+        type: string
+    type: object
+  github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
         type: string
     type: object
 host: localhost:8080
@@ -131,14 +142,14 @@ paths:
         name: post
         required: true
         schema:
-          $ref: '#/definitions/domain.RequestPostCreate'
+          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.Post'
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post'
         "400":
           description: Erro de validação
           schema:
@@ -158,7 +169,7 @@ paths:
           description: Lista de usuários retornada com sucesso
           schema:
             items:
-              $ref: '#/definitions/domain.User'
+              $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse'
             type: array
         "500":
           description: Erro interno ao buscar usuários no banco
@@ -178,14 +189,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/domain.RequestUserCreate'
+          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/domain.User'
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User'
         "400":
           description: Dados inválidos ou JSON malformado
           schema:
@@ -246,7 +257,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.User'
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User'
         "400":
           description: ID inválido (não é um número)
           schema:
@@ -278,14 +289,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/domain.RequestUserUpdate'
+          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate'
       produces:
       - application/json
       responses:
         "200":
           description: Usuário atualizado com sucesso
           schema:
-            $ref: '#/definitions/domain.User'
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User'
         "400":
           description: ID inválido ou JSON malformado
           schema:
@@ -351,7 +362,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.UserFollowersListResponse'
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
         "404":
           description: Vendedor não encontrado
           schema:
@@ -404,7 +415,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.UserFollowersListResponse'
+            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
         "404":
           description: Vendedor não encontrado
           schema:

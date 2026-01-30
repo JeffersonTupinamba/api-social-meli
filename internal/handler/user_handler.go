@@ -64,18 +64,18 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 // @Failure      404     {object}  map[string]string "Usuário não encontrado no banco"
 // @Router       /users/{userId} [get]
 func (h *UserHandler) GetUser(c *gin.Context) {
-
+	// pega o ID do usuário da URL (path parameter) e converte para string e armazena na variável userIdStr
 	userIdStr := c.Param("userId")
 	userId, err := strconv.Atoi(userIdStr)
-
+	// converte o ID do usuário para string
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."}) //status bad request é um status que indica que a requisição é inválida
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID do usuário inválido."})
 		return
 	}
-
+	// busca o usuário no banco de dados
 	var user domain.User
 	if err := h.DB.First(&user, userId).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."}) //status not found é um status que indica que o recurso não foi encontrado
+		c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
 		return
 	}
 
@@ -89,18 +89,17 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 // @Description  Retorna uma lista contendo todos os usuários cadastrados no sistema
 // @Tags         users
 // @Produce      json
-// @Success      200  {array}   domain.User        "Lista de usuários retornada com sucesso"
+// @Success      200  {array}   domain.UserListResponse        "Lista de usuários retornada com sucesso"
 // @Failure      500  {object}  map[string]string  "Erro interno ao buscar usuários no banco"
 // @Router       /users [get]
 func (h *UserHandler) GetUsers(c *gin.Context) {
 
-	var users []domain.User
+	var users []domain.UserListResponse
 
-	if err := h.DB.Find(&users).Error; err != nil {
+	if err := h.UserService.ListUsersService(&users); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar usuários."})
 		return
 	}
-
 	c.JSON(http.StatusOK, users)
 }
 
