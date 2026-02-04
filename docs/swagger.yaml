@@ -1,13 +1,13 @@
 basePath: /
 definitions:
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO:
+  domain.FollowerDTO:
     properties:
       userId:
         type: integer
       userName:
         type: string
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post:
+  domain.Post:
     properties:
       category:
         type: integer
@@ -18,7 +18,7 @@ definitions:
       price:
         type: number
       product:
-        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
+        $ref: '#/definitions/domain.Product'
       user_id:
         type: integer
     required:
@@ -26,7 +26,7 @@ definitions:
     - price
     - user_id
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product:
+  domain.Product:
     properties:
       brand:
         type: string
@@ -47,7 +47,7 @@ definitions:
     - product_name
     - type
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate:
+  domain.RequestPostCreate:
     properties:
       category:
         type: integer
@@ -57,7 +57,7 @@ definitions:
       price:
         type: number
       product:
-        $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product'
+        $ref: '#/definitions/domain.Product'
       user_id:
         type: integer
     required:
@@ -67,7 +67,7 @@ definitions:
     - product
     - user_id
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate:
+  domain.RequestUserCreate:
     properties:
       email:
         type: string
@@ -80,7 +80,7 @@ definitions:
     - name
     - role
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate:
+  domain.RequestUserUpdate:
     properties:
       email:
         type: string
@@ -89,7 +89,7 @@ definitions:
       role:
         type: string
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.User:
+  domain.User:
     properties:
       date:
         type: string
@@ -102,18 +102,18 @@ definitions:
       role:
         type: string
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse:
+  domain.UserFollowersListResponse:
     properties:
       followers:
         items:
-          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO'
+          $ref: '#/definitions/domain.FollowerDTO'
         type: array
       userId:
         type: integer
       userName:
         type: string
     type: object
-  github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse:
+  domain.UserListResponse:
     properties:
       email:
         type: string
@@ -142,14 +142,14 @@ paths:
         name: post
         required: true
         schema:
-          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate'
+          $ref: '#/definitions/domain.RequestPostCreate'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post'
+            $ref: '#/definitions/domain.Post'
         "400":
           description: Erro de validação
           schema:
@@ -158,7 +158,7 @@ paths:
             type: object
       summary: Criar uma nova postagem
       tags:
-      - posts
+      - Posts
   /users:
     get:
       description: Retorna uma lista contendo todos os usuários cadastrados no sistema
@@ -169,7 +169,7 @@ paths:
           description: Lista de usuários retornada com sucesso
           schema:
             items:
-              $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse'
+              $ref: '#/definitions/domain.UserListResponse'
             type: array
         "500":
           description: Erro interno ao buscar usuários no banco
@@ -179,7 +179,7 @@ paths:
             type: object
       summary: Listar todos os usuários
       tags:
-      - users
+      - Users
     post:
       consumes:
       - application/json
@@ -189,14 +189,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate'
+          $ref: '#/definitions/domain.RequestUserCreate'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User'
+            $ref: '#/definitions/domain.User'
         "400":
           description: Dados inválidos ou JSON malformado
           schema:
@@ -211,7 +211,7 @@ paths:
             type: object
       summary: Criar um novo usuário
       tags:
-      - users
+      - Users
   /users/{userId}:
     delete:
       parameters:
@@ -243,7 +243,7 @@ paths:
             type: object
       summary: Deletar um usuário
       tags:
-      - users
+      - Users
     get:
       parameters:
       - description: ID do Usuário
@@ -257,7 +257,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User'
+            $ref: '#/definitions/domain.User'
         "400":
           description: ID inválido (não é um número)
           schema:
@@ -272,7 +272,7 @@ paths:
             type: object
       summary: Buscar usuário por ID
       tags:
-      - users
+      - Users
     put:
       consumes:
       - application/json
@@ -289,14 +289,14 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate'
+          $ref: '#/definitions/domain.RequestUserUpdate'
       produces:
       - application/json
       responses:
         "200":
           description: Usuário atualizado com sucesso
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User'
+            $ref: '#/definitions/domain.User'
         "400":
           description: ID inválido ou JSON malformado
           schema:
@@ -311,7 +311,7 @@ paths:
             type: object
       summary: Atualizar um usuário
       tags:
-      - users
+      - Users
   /users/{userId}/follow/{userIdToFollow}:
     post:
       consumes:
@@ -343,7 +343,7 @@ paths:
             type: object
       summary: Seguir um vendedor
       tags:
-      - users
+      - Users
   /users/{userId}/followed/list:
     get:
       consumes:
@@ -362,7 +362,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
+            $ref: '#/definitions/domain.UserFollowersListResponse'
         "404":
           description: Vendedor não encontrado
           schema:
@@ -377,7 +377,7 @@ paths:
             type: object
       summary: Listar todos os vendedores seguidos
       tags:
-      - users
+      - Users
   /users/{userId}/followers/count:
     get:
       description: Retorna a quantidade total de seguidores de um usuário, DESDE QUE
@@ -397,7 +397,7 @@ paths:
             type: object
       summary: Obter contagem de seguidores
       tags:
-      - users
+      - Users
   /users/{userId}/followers/list:
     get:
       consumes:
@@ -415,7 +415,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse'
+            $ref: '#/definitions/domain.UserFollowersListResponse'
         "404":
           description: Vendedor não encontrado
           schema:
@@ -424,7 +424,7 @@ paths:
             type: object
       summary: Listar seguidores de um vendedor
       tags:
-      - users
+      - Users
   /users/{userId}/unfollow/{userIdToUnfollow}:
     put:
       consumes:
@@ -450,5 +450,5 @@ paths:
             type: string
       summary: Deixar de seguir um vendedor
       tags:
-      - users
+      - Users
 swagger: "2.0"

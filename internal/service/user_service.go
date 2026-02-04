@@ -20,12 +20,21 @@ func (s *UserService) CreateUserService(u *domain.User) error {
 	return nil
 }
 
+// Busca um usuário pelo ID
+func (s *UserService) GetUserByIdService(id int) (*domain.User, error) {
+	user, err := s.UserRepository.GetUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 // Lista todos os usuários
 // ListUsersService é a função que lista todos os usuários no banco de dados
-func (s *UserService) ListUsersService(l *[]domain.UserListResponse) error {
-	err := s.UserRepository.ListUsers(l)
+func (s *UserService) ListUsersService() (*[]domain.User, error) {
+	users, err := s.UserRepository.ListUsers()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	return users, nil
 }

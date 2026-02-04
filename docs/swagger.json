@@ -19,7 +19,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "posts"
+                    "Posts"
                 ],
                 "summary": "Criar uma nova postagem",
                 "parameters": [
@@ -29,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate"
+                            "$ref": "#/definitions/domain.RequestPostCreate"
                         }
                     }
                 ],
@@ -37,7 +37,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post"
+                            "$ref": "#/definitions/domain.Post"
                         }
                     },
                     "400": {
@@ -59,7 +59,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Listar todos os usuários",
                 "responses": {
@@ -68,7 +68,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse"
+                                "$ref": "#/definitions/domain.UserListResponse"
                             }
                         }
                     },
@@ -91,7 +91,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Criar um novo usuário",
                 "parameters": [
@@ -101,7 +101,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate"
+                            "$ref": "#/definitions/domain.RequestUserCreate"
                         }
                     }
                 ],
@@ -109,7 +109,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
+                            "$ref": "#/definitions/domain.User"
                         }
                     },
                     "400": {
@@ -139,7 +139,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Buscar usuário por ID",
                 "parameters": [
@@ -155,7 +155,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
+                            "$ref": "#/definitions/domain.User"
                         }
                     },
                     "400": {
@@ -187,7 +187,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Atualizar um usuário",
                 "parameters": [
@@ -204,7 +204,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate"
+                            "$ref": "#/definitions/domain.RequestUserUpdate"
                         }
                     }
                 ],
@@ -212,7 +212,7 @@
                     "200": {
                         "description": "Usuário atualizado com sucesso",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
+                            "$ref": "#/definitions/domain.User"
                         }
                     },
                     "400": {
@@ -240,7 +240,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Deletar um usuário",
                 "parameters": [
@@ -293,7 +293,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Seguir um vendedor",
                 "parameters": [
@@ -341,7 +341,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Listar todos os vendedores seguidos",
                 "parameters": [
@@ -357,7 +357,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -385,7 +385,7 @@
             "get": {
                 "description": "Retorna a quantidade total de seguidores de um usuário, DESDE QUE ele seja um vendedor (role='seller')",
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Obter contagem de seguidores",
                 "parameters": [
@@ -420,7 +420,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Listar seguidores de um vendedor",
                 "parameters": [
@@ -436,7 +436,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -461,7 +461,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Deixar de seguir um vendedor",
                 "parameters": [
@@ -492,7 +492,7 @@
         }
     },
     "definitions": {
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO": {
+        "domain.FollowerDTO": {
             "type": "object",
             "properties": {
                 "userId": {
@@ -503,7 +503,7 @@
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post": {
+        "domain.Post": {
             "type": "object",
             "required": [
                 "category",
@@ -524,14 +524,14 @@
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                    "$ref": "#/definitions/domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product": {
+        "domain.Product": {
             "type": "object",
             "required": [
                 "brand",
@@ -561,7 +561,7 @@
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate": {
+        "domain.RequestPostCreate": {
             "type": "object",
             "required": [
                 "category",
@@ -582,14 +582,14 @@
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                    "$ref": "#/definitions/domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate": {
+        "domain.RequestUserCreate": {
             "type": "object",
             "required": [
                 "email",
@@ -608,7 +608,7 @@
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate": {
+        "domain.RequestUserUpdate": {
             "type": "object",
             "properties": {
                 "email": {
@@ -622,7 +622,7 @@
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.User": {
+        "domain.User": {
             "type": "object",
             "properties": {
                 "date": {
@@ -642,13 +642,13 @@
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse": {
+        "domain.UserFollowersListResponse": {
             "type": "object",
             "properties": {
                 "followers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO"
+                        "$ref": "#/definitions/domain.FollowerDTO"
                     }
                 },
                 "userId": {
@@ -659,7 +659,7 @@
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse": {
+        "domain.UserListResponse": {
             "type": "object",
             "properties": {
                 "email": {

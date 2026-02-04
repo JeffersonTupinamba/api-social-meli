@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "posts"
+                    "Posts"
                 ],
                 "summary": "Criar uma nova postagem",
                 "parameters": [
@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate"
+                            "$ref": "#/definitions/domain.RequestPostCreate"
                         }
                     }
                 ],
@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post"
+                            "$ref": "#/definitions/domain.Post"
                         }
                     },
                     "400": {
@@ -65,7 +65,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Listar todos os usuários",
                 "responses": {
@@ -74,7 +74,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse"
+                                "$ref": "#/definitions/domain.UserListResponse"
                             }
                         }
                     },
@@ -97,7 +97,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Criar um novo usuário",
                 "parameters": [
@@ -107,7 +107,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate"
+                            "$ref": "#/definitions/domain.RequestUserCreate"
                         }
                     }
                 ],
@@ -115,7 +115,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
+                            "$ref": "#/definitions/domain.User"
                         }
                     },
                     "400": {
@@ -145,7 +145,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Buscar usuário por ID",
                 "parameters": [
@@ -161,7 +161,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
+                            "$ref": "#/definitions/domain.User"
                         }
                     },
                     "400": {
@@ -193,7 +193,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Atualizar um usuário",
                 "parameters": [
@@ -210,7 +210,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate"
+                            "$ref": "#/definitions/domain.RequestUserUpdate"
                         }
                     }
                 ],
@@ -218,7 +218,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Usuário atualizado com sucesso",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.User"
+                            "$ref": "#/definitions/domain.User"
                         }
                     },
                     "400": {
@@ -246,7 +246,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Deletar um usuário",
                 "parameters": [
@@ -299,7 +299,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Seguir um vendedor",
                 "parameters": [
@@ -347,7 +347,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Listar todos os vendedores seguidos",
                 "parameters": [
@@ -363,7 +363,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -391,7 +391,7 @@ const docTemplate = `{
             "get": {
                 "description": "Retorna a quantidade total de seguidores de um usuário, DESDE QUE ele seja um vendedor (role='seller')",
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Obter contagem de seguidores",
                 "parameters": [
@@ -426,7 +426,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Listar seguidores de um vendedor",
                 "parameters": [
@@ -442,7 +442,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/domain.UserFollowersListResponse"
                         }
                     },
                     "404": {
@@ -467,7 +467,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "Users"
                 ],
                 "summary": "Deixar de seguir um vendedor",
                 "parameters": [
@@ -498,7 +498,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO": {
+        "domain.FollowerDTO": {
             "type": "object",
             "properties": {
                 "userId": {
@@ -509,7 +509,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Post": {
+        "domain.Post": {
             "type": "object",
             "required": [
                 "category",
@@ -530,14 +530,14 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                    "$ref": "#/definitions/domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product": {
+        "domain.Product": {
             "type": "object",
             "required": [
                 "brand",
@@ -567,7 +567,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestPostCreate": {
+        "domain.RequestPostCreate": {
             "type": "object",
             "required": [
                 "category",
@@ -588,14 +588,14 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "product": {
-                    "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.Product"
+                    "$ref": "#/definitions/domain.Product"
                 },
                 "user_id": {
                     "type": "integer"
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserCreate": {
+        "domain.RequestUserCreate": {
             "type": "object",
             "required": [
                 "email",
@@ -614,7 +614,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.RequestUserUpdate": {
+        "domain.RequestUserUpdate": {
             "type": "object",
             "properties": {
                 "email": {
@@ -628,7 +628,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.User": {
+        "domain.User": {
             "type": "object",
             "properties": {
                 "date": {
@@ -648,13 +648,13 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserFollowersListResponse": {
+        "domain.UserFollowersListResponse": {
             "type": "object",
             "properties": {
                 "followers": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/github_com_JeffersonTupinamba_api-social-meli_internal_domain.FollowerDTO"
+                        "$ref": "#/definitions/domain.FollowerDTO"
                     }
                 },
                 "userId": {
@@ -665,7 +665,7 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_JeffersonTupinamba_api-social-meli_internal_domain.UserListResponse": {
+        "domain.UserListResponse": {
             "type": "object",
             "properties": {
                 "email": {
