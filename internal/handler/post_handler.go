@@ -24,6 +24,8 @@ type PostHandler struct {
 //	@Param			post	body		domain.RequestPostCreate	true	"Dados da postagem"
 //	@Success		200		{object}	domain.Post
 //	@Failure		400		{object}	map[string]string	"Erro de validação"
+//	@Failure		403		{object}	map[string]string	"Apenas vendedores podem criar posts"
+//	@Failure		500		{object}	map[string]string	"Erro interno ao criar post"
 //	@Router			/products/publish [post]
 func (h *PostHandler) CreatePost(c *gin.Context) {
 
