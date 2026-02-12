@@ -54,6 +54,24 @@ const docTemplate = `{
                                 "type": "string"
                             }
                         }
+                    },
+                    "403": {
+                        "description": "Apenas vendedores podem criar posts",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao criar post",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }
@@ -74,7 +92,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/domain.UserListResponse"
+                                "$ref": "#/definitions/domain.User"
                             }
                         }
                     },
@@ -175,6 +193,15 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Usuário não encontrado no banco",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao buscar usuário",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -289,12 +316,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/{userId}/follow/{userIdToFollow}": {
+        "/users/{userId}/follow/{sellerId}": {
             "post": {
-                "description": "Permite que um usuário siga um vendedor específico",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Permite que um usuário(customer) siga um vendedor(seller) específico",
                 "produces": [
                     "application/json"
                 ],
@@ -313,20 +337,57 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "ID do vendedor a ser seguido",
-                        "name": "userIdToFollow",
+                        "name": "sellerId",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Usuário seguido com sucesso",
+                        "description": "Retorna message e data (follow)",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "400": {
                         "description": "Erro na requisição",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Regra de roles (seller/customer)",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuário ou vendedor não encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Você já segue este vendedor.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -340,9 +401,6 @@ const docTemplate = `{
         "/users/{userId}/followed/list": {
             "get": {
                 "description": "Retorna a lista de todos os vendedores seguidos por um determinado usuário",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -353,7 +411,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID do vendedor",
+                        "description": "ID do usuário",
                         "name": "userId",
                         "in": "path",
                         "required": true
@@ -363,11 +421,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/domain.UserFollowersListResponse"
+                            "$ref": "#/definitions/domain.UserFollowedListResponse"
                         }
                     },
                     "404": {
-                        "description": "Vendedor não encontrado",
+                        "description": "Usuário não encontrado",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -389,7 +447,10 @@ const docTemplate = `{
         },
         "/users/{userId}/followers/count": {
             "get": {
-                "description": "Retorna a quantidade total de seguidores de um usuário, DESDE QUE ele seja um vendedor (role='seller')",
+                "description": "Retorna a quantidade total de seguidores de um usuário, desde que ele seja um vendedor (role='seller')",
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "Users"
                 ],
@@ -404,8 +465,32 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/domain.UserFollowersCountResponse"
+                        }
+                    },
                     "400": {
-                        "description": "ID inválido ou usuário não é vendedor",
+                        "description": "ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Vendedor não encontrado ou usuário não é um vendedor",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao contar seguidores",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -419,9 +504,6 @@ const docTemplate = `{
         "/users/{userId}/followers/list": {
             "get": {
                 "description": "Retorna a lista de todos os usuários que seguem um vendedor específico",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -453,11 +535,20 @@ const docTemplate = `{
                                 "type": "string"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Erro ao buscar seguidores",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
                     }
                 }
             }
         },
-        "/users/{userId}/unfollow/{userIdToUnfollow}": {
+        "/users/{userId}/unfollow/{sellerId}": {
             "put": {
                 "description": "Permite que um usuário pare de seguir um vendedor específico",
                 "consumes": [
@@ -481,16 +572,46 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "ID do vendedor a deixar de seguir",
-                        "name": "userIdToUnfollow",
+                        "name": "sellerId",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Deixou de seguir com sucesso",
+                        "description": "Mensagem de sucesso",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "ID inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Vendedor não encontrado, usuário não é vendedor, ou usuário não segue este vendedor",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno ao deletar follow",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -648,10 +769,10 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.UserFollowersListResponse": {
+        "domain.UserFollowedListResponse": {
             "type": "object",
             "properties": {
-                "followers": {
+                "followedSellers": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/domain.FollowerDTO"
@@ -665,19 +786,33 @@ const docTemplate = `{
                 }
             }
         },
-        "domain.UserListResponse": {
+        "domain.UserFollowersCountResponse": {
             "type": "object",
             "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "id": {
+                "followers_count": {
                     "type": "integer"
                 },
-                "name": {
-                    "type": "string"
+                "user_id": {
+                    "type": "integer"
                 },
-                "role": {
+                "user_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.UserFollowersListResponse": {
+            "type": "object",
+            "properties": {
+                "followers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.FollowerDTO"
+                    }
+                },
+                "userId": {
+                    "type": "integer"
+                },
+                "userName": {
                     "type": "string"
                 }
             }

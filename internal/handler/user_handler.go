@@ -65,6 +65,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 //	@Success	200		{object}	domain.User
 //	@Failure	400		{object}	map[string]string	"ID inválido (não é um número)"
 //	@Failure	404		{object}	map[string]string	"Usuário não encontrado no banco"
+//	@Failure	500		{object}	map[string]string	"Erro interno ao buscar usuário"
 //	@Router		/users/{userId} [get]
 func (h *UserHandler) GetUser(c *gin.Context) {
 	// pega o ID do usuário da URL (path parameter) e converte para string e armazena na variável userIdStr
@@ -97,7 +98,7 @@ func (h *UserHandler) GetUser(c *gin.Context) {
 //	@Description	Retorna uma lista contendo todos os usuários cadastrados no sistema
 //	@Tags			Users
 //	@Produce		json
-//	@Success		200	{array}		domain.UserListResponse	"Lista de usuários retornada com sucesso"
+//	@Success		200	{array}		domain.User	"Lista de usuários retornada com sucesso"
 //	@Failure		500	{object}	map[string]string		"Erro interno ao buscar usuários no banco"
 //	@Router			/users [get]
 func (h *UserHandler) GetUsers(c *gin.Context) {
@@ -189,12 +190,17 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 // US 0002: Obter o número de seguidores de um vendedor
 
 // GetUsersFollowersCountBySeller godoc
-// @Summary		Obter contagem de seguidores
-// @Description	Retorna a quantidade total de seguidores de um usuário, DESDE QUE ele seja um vendedor (role='seller')
-// @Tags			Users
-// @Param			userId	path		int					true	"ID do vendedor"
-// @Failure		400		{object}	map[string]string	"ID inválido ou usuário não é vendedor"
-// @Router			/users/{userId}/followers/count [get]
+//
+//	@Summary		Obter contagem de seguidores
+//	@Description	Retorna a quantidade total de seguidores de um usuário, desde que ele seja um vendedor (role='seller')
+//	@Tags			Users
+//	@Produce		json
+//	@Param			userId	path		int	true	"ID do vendedor"
+//	@Success		200		{object}	domain.UserFollowersCountResponse
+//	@Failure		400		{object}	map[string]string	"ID inválido"
+//	@Failure		404		{object}	map[string]string	"Vendedor não encontrado ou usuário não é um vendedor"
+//	@Failure		500		{object}	map[string]string	"Erro ao contar seguidores"
+//	@Router			/users/{userId}/followers/count [get]
 func (h *UserHandler) GetUsersFollowersCountBySeller(c *gin.Context) {
 	userIdStr := c.Param("userId") // Alinhado com o roteador
 	userId, err := strconv.Atoi(userIdStr)
@@ -232,11 +238,11 @@ func (h *UserHandler) GetUsersFollowersCountBySeller(c *gin.Context) {
 //	@Summary		Listar seguidores de um vendedor
 //	@Description	Retorna a lista de todos os usuários que seguem um vendedor específico
 //	@Tags			Users
-//	@Accept			json
 //	@Produce		json
 //	@Param			userId	path		int	true	"ID do vendedor"
 //	@Success		200		{object}	domain.UserFollowersListResponse
 //	@Failure		404		{object}	map[string]string	"Vendedor não encontrado"
+//	@Failure		500		{object}	map[string]string	"Erro ao buscar seguidores"
 //	@Router			/users/{userId}/followers/list [get]
 func (h *UserHandler) GetUsersFollowersList(c *gin.Context) {
 	userIdStr := c.Param("userId")
@@ -279,11 +285,10 @@ func (h *UserHandler) GetUsersFollowersList(c *gin.Context) {
 //	@Summary		Listar todos os vendedores seguidos
 //	@Description	Retorna a lista de todos os vendedores seguidos por um determinado usuário
 //	@Tags			Users
-//	@Accept			json
 //	@Produce		json
-//	@Param			userId	path		int	true	"ID do vendedor"
-//	@Success		200		{object}	domain.UserFollowersListResponse
-//	@Failure		404		{object}	map[string]string	"Vendedor não encontrado"
+//	@Param			userId	path		int	true	"ID do usuário"
+//	@Success		200		{object}	domain.UserFollowedListResponse
+//	@Failure		404		{object}	map[string]string	"Usuário não encontrado"
 //	@Failure		500		{object}	map[string]string	"Erro ao buscar vendedores seguidos"
 //	@Router			/users/{userId}/followed/list [get]
 func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
@@ -331,7 +336,10 @@ func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
 //	@Produce		json
 //	@Param			userId				path		int		true	"ID do usuário"
 //	@Param			sellerId			path		int		true	"ID do vendedor a deixar de seguir"
-//	@Success		200					{string}	string	"Deixou de seguir com sucesso"
+//	@Success		200					{object}	map[string]string	"Mensagem de sucesso"
+//	@Failure		400					{object}	map[string]string	"ID inválido"
+//	@Failure		404					{object}	map[string]string	"Vendedor não encontrado, usuário não é vendedor, ou usuário não segue este vendedor"
+//	@Failure		500					{object}	map[string]string	"Erro interno ao deletar follow"
 //	@Router			/users/{userId}/unfollow/{sellerId} [put]
 func (h *UserHandler) UnfollowUser(c *gin.Context) {
 

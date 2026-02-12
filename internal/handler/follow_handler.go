@@ -20,12 +20,15 @@ type FollowHandler struct {
 //	@Summary		Seguir um vendedor
 //	@Description	Permite que um usuário(customer) siga um vendedor(seller) específico
 //	@Tags			Users
-//	@Accept			json
 //	@Produce		json
 //	@Param			userId			path		int					true	"ID do usuário que vai seguir"
 //	@Param			sellerId	path		int					true	"ID do vendedor a ser seguido"
-//	@Success		200				{string}	string				"Usuário seguido com sucesso"
-//	@Failure		400				{object}	map[string]string	"Erro na requisição"
+//	@Success		200				{object}	map[string]interface{}	"Retorna message e data (follow)"
+//	@Failure		400				{object}	map[string]string		"Erro na requisição"
+//	@Failure		403				{object}	map[string]string		"Regra de roles (seller/customer)"
+//	@Failure		404				{object}	map[string]string		"Usuário ou vendedor não encontrado"
+//	@Failure		409				{object}	map[string]string		"Você já segue este vendedor."
+//	@Failure		500				{object}	map[string]string		"Erro interno"
 //	@Router			/users/{userId}/follow/{sellerId} [post]
 func (h *FollowHandler) FollowUser(c *gin.Context) {
 
@@ -47,23 +50,31 @@ func (h *FollowHandler) FollowUser(c *gin.Context) {
 	if err != nil {
 		switch err.Error() {
 		case "Você não pode seguir você mesmo.":
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Você não pode seguir você mesmo."})
-			return
-		case "Vendedor não encontrado.":
-			c.JSON(http.StatusNotFound, gin.H{"error": "Vendedor não encontrado."})
-			return
-		case "O ID informado não pertence a um vendedor.":
-			c.JSON(http.StatusBadRequest, gin.H{"error": "O ID informado não pertence a um vendedor."})
-			return
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		case "Você já segue este vendedor.":
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Você já segue este vendedor."})
-			return
+			// Ideal: 409 Conflict (recurso já existe)
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+		case "Vendedor não encontrado.":
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		case "Usuário não encontrado.":
-			c.JSON(http.StatusNotFound, gin.H{"error": "Usuário não encontrado."})
-			return
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		case "O ID informado não pertence a um vendedor.":
+			// Ideal: 403 Forbidden (role não permite) ou 400 (input inválido)
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+		case "O ID informado não pertence a um comprador.":
+			c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
+		case "Erro ao verificar se usuário já segue vendedor.":
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		case "Erro ao seguir o vendedor.":
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		default:
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro inesperado ao seguir vendedor."})
 		}
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Usuário seguindo vendedor com sucesso!",
-		"data": follow})
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Usuário seguindo vendedor com sucesso!",
+		"data":    follow,
+	})
 }

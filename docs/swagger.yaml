@@ -102,6 +102,26 @@ definitions:
       role:
         type: string
     type: object
+  domain.UserFollowedListResponse:
+    properties:
+      followedSellers:
+        items:
+          $ref: '#/definitions/domain.FollowerDTO'
+        type: array
+      userId:
+        type: integer
+      userName:
+        type: string
+    type: object
+  domain.UserFollowersCountResponse:
+    properties:
+      followers_count:
+        type: integer
+      user_id:
+        type: integer
+      user_name:
+        type: string
+    type: object
   domain.UserFollowersListResponse:
     properties:
       followers:
@@ -111,17 +131,6 @@ definitions:
       userId:
         type: integer
       userName:
-        type: string
-    type: object
-  domain.UserListResponse:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      role:
         type: string
     type: object
 host: localhost:8080
@@ -156,6 +165,18 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "403":
+          description: Apenas vendedores podem criar posts
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno ao criar post
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Criar uma nova postagem
       tags:
       - Posts
@@ -169,7 +190,7 @@ paths:
           description: Lista de usuários retornada com sucesso
           schema:
             items:
-              $ref: '#/definitions/domain.UserListResponse'
+              $ref: '#/definitions/domain.User'
             type: array
         "500":
           description: Erro interno ao buscar usuários no banco
@@ -270,6 +291,12 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "500":
+          description: Erro interno ao buscar usuário
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Buscar usuário por ID
       tags:
       - Users
@@ -312,11 +339,9 @@ paths:
       summary: Atualizar um usuário
       tags:
       - Users
-  /users/{userId}/follow/{userIdToFollow}:
+  /users/{userId}/follow/{sellerId}:
     post:
-      consumes:
-      - application/json
-      description: Permite que um usuário siga um vendedor específico
+      description: Permite que um usuário(customer) siga um vendedor(seller) específico
       parameters:
       - description: ID do usuário que vai seguir
         in: path
@@ -325,18 +350,43 @@ paths:
         type: integer
       - description: ID do vendedor a ser seguido
         in: path
-        name: userIdToFollow
+        name: sellerId
         required: true
         type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: Usuário seguido com sucesso
+          description: Retorna message e data (follow)
           schema:
-            type: string
+            additionalProperties: true
+            type: object
         "400":
           description: Erro na requisição
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "403":
+          description: Regra de roles (seller/customer)
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Usuário ou vendedor não encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Você já segue este vendedor.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno
           schema:
             additionalProperties:
               type: string
@@ -346,12 +396,10 @@ paths:
       - Users
   /users/{userId}/followed/list:
     get:
-      consumes:
-      - application/json
       description: Retorna a lista de todos os vendedores seguidos por um determinado
         usuário
       parameters:
-      - description: ID do vendedor
+      - description: ID do usuário
         in: path
         name: userId
         required: true
@@ -362,9 +410,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/domain.UserFollowersListResponse'
+            $ref: '#/definitions/domain.UserFollowedListResponse'
         "404":
-          description: Vendedor não encontrado
+          description: Usuário não encontrado
           schema:
             additionalProperties:
               type: string
@@ -380,7 +428,7 @@ paths:
       - Users
   /users/{userId}/followers/count:
     get:
-      description: Retorna a quantidade total de seguidores de um usuário, DESDE QUE
+      description: Retorna a quantidade total de seguidores de um usuário, desde que
         ele seja um vendedor (role='seller')
       parameters:
       - description: ID do vendedor
@@ -388,9 +436,27 @@ paths:
         name: userId
         required: true
         type: integer
+      produces:
+      - application/json
       responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/domain.UserFollowersCountResponse'
         "400":
-          description: ID inválido ou usuário não é vendedor
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Vendedor não encontrado ou usuário não é um vendedor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro ao contar seguidores
           schema:
             additionalProperties:
               type: string
@@ -400,8 +466,6 @@ paths:
       - Users
   /users/{userId}/followers/list:
     get:
-      consumes:
-      - application/json
       description: Retorna a lista de todos os usuários que seguem um vendedor específico
       parameters:
       - description: ID do vendedor
@@ -422,10 +486,16 @@ paths:
             additionalProperties:
               type: string
             type: object
+        "500":
+          description: Erro ao buscar seguidores
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Listar seguidores de um vendedor
       tags:
       - Users
-  /users/{userId}/unfollow/{userIdToUnfollow}:
+  /users/{userId}/unfollow/{sellerId}:
     put:
       consumes:
       - application/json
@@ -438,16 +508,37 @@ paths:
         type: integer
       - description: ID do vendedor a deixar de seguir
         in: path
-        name: userIdToUnfollow
+        name: sellerId
         required: true
         type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: Deixou de seguir com sucesso
+          description: Mensagem de sucesso
           schema:
-            type: string
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: ID inválido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Vendedor não encontrado, usuário não é vendedor, ou usuário
+            não segue este vendedor
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Erro interno ao deletar follow
+          schema:
+            additionalProperties:
+              type: string
+            type: object
       summary: Deixar de seguir um vendedor
       tags:
       - Users
