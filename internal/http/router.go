@@ -19,12 +19,15 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default() // cria uma nova instância de gin default que é um router padrão do gin
 
 	ur := &repository.UserRepository{DB: db}
-	us := &service.UserService{UserRepository: ur}          // cria uma nova instância de UserService com o banco de dados
-	h := &handler.UserHandler{DB: db, UserService: us}      // cria uma nova instância de UserHandler com o banco de dados
-	ph := &handler.PostHandler{DB: db}                      // cria uma nova instância de PostHandler com o banco de dados
-	fr := &repository.FollowRepository{DB: db}              // cria uma nova instância de FollowRepository com o banco de dados
-	fs := &service.FollowService{FollowRepository: fr}      // cria uma nova instância de FollowService com o banco de dados
-	fh := &handler.FollowHandler{DB: db, FollowService: fs} // cria uma nova instância de FollowHandler com o banco de dados
+	us := &service.UserService{UserRepository: ur}     // cria uma nova instância de UserService com o banco de dados
+	h := &handler.UserHandler{DB: db, UserService: us} // cria uma nova instância de UserHandler com o banco de dados
+	ph := &handler.PostHandler{DB: db}                 // cria uma nova instância de PostHandler com o banco de dados
+	fr := &repository.FollowRepository{DB: db}         // cria uma nova instância de FollowRepository com o banco de dados
+	fs := &service.FollowService{
+		FollowRepository: fr,
+		UserRepository:   ur,
+	} // cria uma nova instância de FollowService com o banco de dados
+	fh := &handler.FollowHandler{FollowService: fs} // cria uma nova instância de FollowHandler com o banco de dados
 
 	r.Use(cors.Default()) // configura o CORS para permitir todas as origens, métodos e headers
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

@@ -10,12 +10,36 @@ type FollowRepository struct {
 	DB *gorm.DB
 }
 
-// US 0001: Poder "seguir" um vendedor específico
-// FollowUser é a função que permite a um usuário seguir um vendedor específico
-func (r *FollowRepository) FollowUser(u *domain.UserFollow) error {
-	resp := r.DB.Create(&u)
+func (r *FollowRepository) CheckFollowByUserIdAndSellerId(userId, sellerId int) (bool, error) {
+	var count int64
+
+	resp := r.DB.
+		Model(&domain.UserFollow{}).
+		Where("follower_id = ? AND seller_id = ?", userId, sellerId).
+		Count(&count)
+
+	if resp.Error != nil {
+		return false, resp.Error
+	}
+
+	return count > 0, nil
+}
+
+// Cria um novo follow
+func (r *FollowRepository) CreateFollow(f *domain.UserFollow) error {
+	resp := r.DB.Create(f)
 	if resp.Error != nil {
 		return resp.Error
 	}
 	return nil
+}
+
+// busca um vendedor pelo ID
+func (r *FollowRepository) GetSellerById(id int) (*domain.User, error) {
+	var seller domain.User
+	resp := r.DB.Model(&domain.User{}).First(&seller, id)
+	if resp.Error != nil {
+		return nil, resp.Error
+	}
+	return &seller, nil
 }

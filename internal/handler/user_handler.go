@@ -330,9 +330,9 @@ func (h *UserHandler) GetUsersFollowedSellersList(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			userId				path		int		true	"ID do usuário"
-//	@Param			userIdToUnfollow	path		int		true	"ID do vendedor a deixar de seguir"
+//	@Param			sellerId			path		int		true	"ID do vendedor a deixar de seguir"
 //	@Success		200					{string}	string	"Deixou de seguir com sucesso"
-//	@Router			/users/{userId}/unfollow/{userIdToUnfollow} [put]
+//	@Router			/users/{userId}/unfollow/{sellerId} [put]
 func (h *UserHandler) UnfollowUser(c *gin.Context) {
 
 	userIdStr := c.Param("userId")
